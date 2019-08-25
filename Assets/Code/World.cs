@@ -23,17 +23,22 @@ public class World : MonoBehaviour
     
     public static void Impact(Cube player, Cube target)
     {
-        if(target.content.color == Color.black)
-        {
-            player.content.RemoveColored(target.content.rows * target.content.rows);
-            target.Kill();
+        Debug.Log("Impact - " + player.name);
+        //if (target != null)
+        //{
+            if (target.content.color == Color.black)
+            {
+                player.content.RemoveColored(target.content.rows * target.content.rows);
+                target.Kill();
 
-        }
-        else if (colors.Contains(target.content.color))
-        {
-            player.content.AddColored(target.content.rows * target.content.rows, target.content.color);
-            target.Kill();
-        }
+            }
+            else if (colors.Contains(target.content.color))
+            {
+                player.content.AddColored(target.content.rows * target.content.rows, target.content.color);
+                target.Kill();
+            }
+        //}
+
         UpdateInterface(player);
 
     }

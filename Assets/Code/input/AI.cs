@@ -55,11 +55,15 @@ public class AI : MonoBehaviour, IInput
     
     void Awake()
     {
-        agent = gameObject.AddComponent<NavMeshAgent>();
-        agent.updatePosition = false;
-        agent.updateRotation = false; 
-        agent.updateUpAxis = false;
-        agent.speed = 20;
+        //if (axis == null)
+        //{
+            agent = gameObject.AddComponent<NavMeshAgent>();
+            agent.updatePosition = false;
+            agent.updateRotation = false;
+            agent.updateUpAxis = false;
+            agent.speed = 20;
+        //}
+
     }
     
     public void Warp(Vector3 position)

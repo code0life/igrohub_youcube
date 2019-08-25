@@ -45,7 +45,7 @@ public class Cube : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(input.axis != Vector3.zero)
+        if(input.axis != Vector3.zero && input.axis != null)
             moving.Rotate(input.axis, content.width);
     }
 
@@ -57,10 +57,11 @@ public class Cube : MonoBehaviour
 
     public void Kill()
     {
+        Destroy(gameObject);
         if (content.color == Color.black)
         {
             content.CubeClone(gameObject);
         }
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
 }

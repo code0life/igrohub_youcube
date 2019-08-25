@@ -63,10 +63,9 @@ public class Interface : MonoBehaviour
     public void SetStates(int color_count, int all_count)
     {
         int white_color = all_count - color_count;
-        Debug.Log(white_color);
 
         //var white = new Interface();
-        Debug.Log(white_cubes.GetComponent<Text>().text);
+        //Debug.Log(white_cubes.GetComponent<Text>().text);
 
         //white_cubes.text = " White cube - " + white_color;
         //white_cubes.GetComponent<Text>().text = " White cube - " + white_color;

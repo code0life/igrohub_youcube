@@ -175,10 +175,10 @@ public class CubeContent : MonoBehaviour
 
     void SetCubeColor(int row_x, int row_y, int row_z, Color new_color, bool is_anim)
     {
-        Debug.Log("SetCubeColor - " + is_anim);
+        //Debug.Log("SetCubeColor - " + is_anim);
         if (is_anim == false)
         {
-            Debug.Log("is_anim == false");
+            //Debug.Log("is_anim == false");
             GameObject cube = GetOrCreateCube(row_x, row_y, row_z);
             var tempMaterial = new Material(cube.GetComponent<Renderer>().sharedMaterial);
             tempMaterial.color = new_color;
@@ -186,7 +186,7 @@ public class CubeContent : MonoBehaviour
         }
         else
         {
-            Debug.Log("is_anim == true");
+            //Debug.Log("is_anim == true");
             AnimChangeCubeColor(row_x, row_y, row_z, new_color);
         }
 
@@ -217,12 +217,30 @@ public class CubeContent : MonoBehaviour
             rb.isKinematic = false;
             rb.AddForce(transform.forward * 5);
         }
-        Destroy(cube, 1f);
+        Destroy(cube, 2f);
     }
 
     public void CubeClone(GameObject cube_original)
     {
         GameObject cube = Instantiate(cube_original.gameObject, cube_original.transform.position, cube_original.transform.rotation);
+        cube.gameObject.GetComponent<Collider>().enabled = false;
+        cube.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+        cube.gameObject.GetComponent<Rigidbody>().detectCollisions = false;
+
+        ForeachElements(delegate (int row_x, int row_y, int row_z)
+        {
+            SetCubeColor(row_x, row_y, row_z, color, false);
+        });
+
+        //Debug.Log(cube.GetComponent<CubeContent>().GetCubesCount(World.colors));
+
+        var rb = cube.gameObject.GetComponentInChildren<Rigidbody>();
+        if (rb != null)
+        {
+            rb.mass = 1f;
+            rb.isKinematic = false;
+            //rb.AddForce(transform.forward * 5);
+        }
 
         //var tempMaterial = new Material(cube.GetComponent<Renderer>().sharedMaterial);
         //tempMaterial.color = tempMaterial.color;
@@ -234,7 +252,7 @@ public class CubeContent : MonoBehaviour
         //    rb.isKinematic = false;
         //    rb.AddForce(transform.forward * 5);
         //}
-        Destroy(cube, 1f);
+        Destroy(cube, 2f);
     }
 
     public void GenerateColored(float percent)
@@ -250,7 +268,6 @@ public class CubeContent : MonoBehaviour
     public void AddColored(int count, Color new_color)
     {
         int new_colored_count = Mathf.Min(GetCubesCount(World.colors) + count, content.Length);
-        Debug.Log("AddColored - " + new_colored_count);
         while (GetCubesCount(World.colors) < new_colored_count)
         {
             int row_x, row_y, row_z = 0;
@@ -268,9 +285,6 @@ public class CubeContent : MonoBehaviour
     public void RemoveColored(int count)
     {
         int new_colored_count = Mathf.Max(GetCubesCount(World.colors) - count, 0);
-        Debug.Log("GetCubesCount(World.colors) - " + GetCubesCount(World.colors));
-        Debug.Log("RemoveColored - " + new_colored_count);
-
         while (GetCubesCount(World.colors) > new_colored_count)
         {
             int row_x, row_y, row_z = 0;
