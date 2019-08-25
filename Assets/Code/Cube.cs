@@ -35,7 +35,11 @@ public class Cube : MonoBehaviour
         input.step_size = content.width;
         
         if(is_player)
+        {
             content.GenerateColored(percent: 0.8f);
+            World.UpdateInterface(this);
+        }
+
     }
 
     // Update is called once per frame
@@ -47,12 +51,16 @@ public class Cube : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(is_player && other.gameObject.GetComponent<Cube>() != null) 
+        if(is_player && other.gameObject.GetComponent<Cube>() != null)
             World.Impact(this, other.gameObject.GetComponent<Cube>());
     }
 
     public void Kill()
     {
+        if (content.color == Color.black)
+        {
+            content.CubeClone(gameObject);
+        }
         Destroy(gameObject);
     }
 }

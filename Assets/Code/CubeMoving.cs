@@ -36,8 +36,12 @@ public class CubeMoving : MonoBehaviour
 
     private void StartRotation()
     {
-        coroutine_animation = DoRotation(); 
-        StartCoroutine(coroutine_animation);
+        coroutine_animation = DoRotation();
+        if (!Interface.instance.game_done)
+        {
+            StartCoroutine(coroutine_animation);
+        }
+
     }
 
     IEnumerator ShowVfx()

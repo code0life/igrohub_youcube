@@ -8,7 +8,7 @@ public class CubeContent : MonoBehaviour
 {
     private GameObject container;
     public GameObject[,,] content = new GameObject[3,3,3];
-    
+
     public float width
     {
         get { return rows*size + Mathf.Max((rows - 1) * delta, 0); }
@@ -23,9 +23,10 @@ public class CubeContent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         if (!Application.isPlaying)
             return;
-        
+
         container = new GameObject("container");
         container.transform.parent = transform;
         container.transform.localPosition = new Vector3(-width/2, -width/2, -width/2);
@@ -35,8 +36,10 @@ public class CubeContent : MonoBehaviour
 
         ForeachElements(delegate(int row_x, int row_y, int row_z)
         {
-            SetCubeColor(row_x, row_y, row_z, color);
+            SetCubeColor(row_x, row_y, row_z, color, false);
         });
+
+        //UpdateInterface();
     }
     
     // Update is called once per frame
@@ -81,7 +84,7 @@ public class CubeContent : MonoBehaviour
         }
     }
     
-    int GetCubesCount(List<Color> colors)
+    public int GetCubesCount(List<Color> colors)
     {
         int count = 0;
         ForeachElements(delegate(int cube_x, int cube_y, int cube_z)
@@ -142,15 +145,22 @@ public class CubeContent : MonoBehaviour
     GameObject GetOrCreateCube(int row_x, int row_y, int row_z)
     {
         GameObject cube = content[row_x, row_y, row_z];
+        Rigidbody rb = GetComponent<Rigidbody>();
+
         if (cube == null)
         {
+
             cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube.name = "element";
+            cube.name = "element"+ row_x +"_"+ row_y+"_"+ row_z;
             cube.transform.parent = container.transform;
             cube.transform.localScale = new Vector3(size, size, size);
             cube.transform.localPosition =
                 new Vector3(row_x * size + row_x * delta, row_y * size + row_y * delta,
                     row_z * size + row_z * delta) + Vector3.one * size / 2;
+
+            rb = cube.AddComponent<Rigidbody>();
+            rb.mass = 0f;
+            rb.isKinematic = true;
 
             content[row_x, row_y, row_z] = cube;
         }
@@ -163,12 +173,68 @@ public class CubeContent : MonoBehaviour
         return cube.GetComponent<Renderer>().sharedMaterial.color;
     }
 
-    void SetCubeColor(int row_x, int row_y, int row_z, Color new_color)
+    void SetCubeColor(int row_x, int row_y, int row_z, Color new_color, bool is_anim)
+    {
+        Debug.Log("SetCubeColor - " + is_anim);
+        if (is_anim == false)
+        {
+            Debug.Log("is_anim == false");
+            GameObject cube = GetOrCreateCube(row_x, row_y, row_z);
+            var tempMaterial = new Material(cube.GetComponent<Renderer>().sharedMaterial);
+            tempMaterial.color = new_color;
+            cube.GetComponent<Renderer>().sharedMaterial = tempMaterial;
+        }
+        else
+        {
+            Debug.Log("is_anim == true");
+            AnimChangeCubeColor(row_x, row_y, row_z, new_color);
+        }
+
+    }
+
+    void AnimChangeCubeColor(int row_x, int row_y, int row_z, Color new_color)
     {
         GameObject cube = GetOrCreateCube(row_x, row_y, row_z);
         var tempMaterial = new Material(cube.GetComponent<Renderer>().sharedMaterial);
+
+        MiniCubeClone(cube, new_color);
+        
         tempMaterial.color = new_color;
         cube.GetComponent<Renderer>().sharedMaterial = tempMaterial;
+    }
+
+    void MiniCubeClone(GameObject cube_original, Color new_color)
+    {
+        GameObject cube = Instantiate(cube_original.gameObject, cube_original.transform.position, cube_original.transform.rotation);
+
+        var tempMaterial = new Material(cube.GetComponent<Renderer>().sharedMaterial);
+        tempMaterial.color = tempMaterial.color;
+        cube.GetComponent<Renderer>().sharedMaterial = tempMaterial;
+        var rb = cube.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.mass = 1f;
+            rb.isKinematic = false;
+            rb.AddForce(transform.forward * 5);
+        }
+        Destroy(cube, 1f);
+    }
+
+    public void CubeClone(GameObject cube_original)
+    {
+        GameObject cube = Instantiate(cube_original.gameObject, cube_original.transform.position, cube_original.transform.rotation);
+
+        //var tempMaterial = new Material(cube.GetComponent<Renderer>().sharedMaterial);
+        //tempMaterial.color = tempMaterial.color;
+        //cube.GetComponent<Renderer>().sharedMaterial = tempMaterial;
+        //var rb = cube.GetComponent<Rigidbody>();
+        //if (rb != null)
+        //{
+        //    rb.mass = 1f;
+        //    rb.isKinematic = false;
+        //    rb.AddForce(transform.forward * 5);
+        //}
+        Destroy(cube, 1f);
     }
 
     public void GenerateColored(float percent)
@@ -177,30 +243,65 @@ public class CubeContent : MonoBehaviour
         {
             int row_x, row_y, row_z = 0;
             GetRandomCubePosition(new List<Color>{Color.white}, out row_x, out row_y, out row_z);
-            SetCubeColor(row_x, row_y, row_z, World.GetRandomColor());
+            SetCubeColor(row_x, row_y, row_z, World.GetRandomColor(), false);
         }
     }
     
     public void AddColored(int count, Color new_color)
     {
         int new_colored_count = Mathf.Min(GetCubesCount(World.colors) + count, content.Length);
-        
+        Debug.Log("AddColored - " + new_colored_count);
         while (GetCubesCount(World.colors) < new_colored_count)
         {
             int row_x, row_y, row_z = 0;
             GetNextCubePosition(new List<Color>{Color.white}, out row_x, out row_y, out row_z);
-            SetCubeColor(row_x, row_y, row_z, new_color);
+            SetCubeColor(row_x, row_y, row_z, new_color, true);
         }
+
+        if (IsFull())
+        {
+            World.IsGameWin(this.GetComponent<Cube>());
+        }
+
     }
     
     public void RemoveColored(int count)
     {
         int new_colored_count = Mathf.Max(GetCubesCount(World.colors) - count, 0);
+        Debug.Log("GetCubesCount(World.colors) - " + GetCubesCount(World.colors));
+        Debug.Log("RemoveColored - " + new_colored_count);
+
         while (GetCubesCount(World.colors) > new_colored_count)
         {
             int row_x, row_y, row_z = 0;
             GetRandomCubePosition(World.colors, out row_x, out row_y, out row_z);
-            SetCubeColor(row_x, row_y, row_z, Color.white);
+            SetCubeColor(row_x, row_y, row_z, Color.white, true);
+        }
+
+        if (IsEmpty())
+        {
+            World.IsGameOver(this.GetComponent<Cube>());
         }
     }
+
+    public bool IsEmpty()
+    {
+        int color_count = GetCubesCount(World.colors);
+        if (color_count <= 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public bool IsFull()
+    {
+        int color_count = GetCubesCount(World.colors);
+        if (color_count >= content.Length)
+        {
+            return true;
+        }
+        return false;
+    }
+
 }
