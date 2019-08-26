@@ -227,20 +227,23 @@ public class CubeContent : MonoBehaviour
         cube.gameObject.GetComponent<Rigidbody>().isKinematic = true;
         cube.gameObject.GetComponent<Rigidbody>().detectCollisions = false;
 
+        GameObject clone_cube;
+        Rigidbody rb;
+
         ForeachElements(delegate (int row_x, int row_y, int row_z)
         {
-            SetCubeColor(row_x, row_y, row_z, color, false);
+            //clone_cube = GetOrCreateCube(row_x, row_y, row_z);
+            //rb = clone_cube.GetComponentInChildren<Rigidbody>();
+            //if (rb != null)
+            //{
+            //    rb.mass = 1f;
+            //    rb.isKinematic = false;
+            //}
+
         });
 
         //Debug.Log(cube.GetComponent<CubeContent>().GetCubesCount(World.colors));
 
-        var rb = cube.gameObject.GetComponentInChildren<Rigidbody>();
-        if (rb != null)
-        {
-            rb.mass = 1f;
-            rb.isKinematic = false;
-            //rb.AddForce(transform.forward * 5);
-        }
 
         //var tempMaterial = new Material(cube.GetComponent<Renderer>().sharedMaterial);
         //tempMaterial.color = tempMaterial.color;

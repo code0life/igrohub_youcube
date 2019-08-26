@@ -55,7 +55,7 @@ public class AI : MonoBehaviour, IInput
     
     void Awake()
     {
-        //if (axis == null)
+        //if (agent.GetComponent<NavMeshAgent>().isOnNavMesh == true)
         //{
             agent = gameObject.AddComponent<NavMeshAgent>();
             agent.updatePosition = false;

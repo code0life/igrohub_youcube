@@ -67,13 +67,13 @@ public class Interface : MonoBehaviour
         //var white = new Interface();
         //Debug.Log(white_cubes.GetComponent<Text>().text);
 
-        //white_cubes.text = " White cube - " + white_color;
-        //white_cubes.GetComponent<Text>().text = " White cube - " + white_color;
-        //colored_cubes.GetComponent<Text>().text = " Color cube - " + color_count;
-        //all_cubes.GetComponent<Text>().text = " All cube - " + all_count;
+        white_cubes.text = " White cube - " + white_color;
+        white_cubes.GetComponent<Text>().text = " White cube - " + white_color;
+        colored_cubes.GetComponent<Text>().text = " Color cube - " + color_count;
+        all_cubes.GetComponent<Text>().text = " All cube - " + all_count;
     }
 
-    public static void ResetGame()
+    public void ResetGame()
     {
         SceneManager.LoadScene(0);
     }
