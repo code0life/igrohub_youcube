@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using UnityEngine.AI;
+using System.Collections;
 
 [ExecuteAlways]
 public class CubeContent : MonoBehaviour
@@ -19,7 +21,9 @@ public class CubeContent : MonoBehaviour
     public float size = 1.0f;
     public float delta = 0.2f;
     public Color color = Color.white;
-    
+
+    public GameObject vfx_fade;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -175,10 +179,8 @@ public class CubeContent : MonoBehaviour
 
     void SetCubeColor(int row_x, int row_y, int row_z, Color new_color, bool is_anim)
     {
-        //Debug.Log("SetCubeColor - " + is_anim);
         if (is_anim == false)
         {
-            //Debug.Log("is_anim == false");
             GameObject cube = GetOrCreateCube(row_x, row_y, row_z);
             var tempMaterial = new Material(cube.GetComponent<Renderer>().sharedMaterial);
             tempMaterial.color = new_color;
@@ -186,7 +188,6 @@ public class CubeContent : MonoBehaviour
         }
         else
         {
-            //Debug.Log("is_anim == true");
             AnimChangeCubeColor(row_x, row_y, row_z, new_color);
         }
 
@@ -197,13 +198,13 @@ public class CubeContent : MonoBehaviour
         GameObject cube = GetOrCreateCube(row_x, row_y, row_z);
         var tempMaterial = new Material(cube.GetComponent<Renderer>().sharedMaterial);
 
-        MiniCubeClone(cube, new_color);
+        MiniCubeClone(cube, tempMaterial.color, 5f);
         
         tempMaterial.color = new_color;
         cube.GetComponent<Renderer>().sharedMaterial = tempMaterial;
     }
 
-    void MiniCubeClone(GameObject cube_original, Color new_color)
+    void MiniCubeClone(GameObject cube_original, Color new_color, float time)
     {
         GameObject cube = Instantiate(cube_original.gameObject, cube_original.transform.position, cube_original.transform.rotation);
 
@@ -217,45 +218,24 @@ public class CubeContent : MonoBehaviour
             rb.isKinematic = false;
             rb.AddForce(transform.forward * 5);
         }
-        Destroy(cube, 2f);
+        StartCoroutine(ShowFadeVfx(cube, new_color, time));
+        Destroy(cube, time);
     }
 
-    public void CubeClone(GameObject cube_original)
+    public void CubeClone(GameObject cube_original, float time)
     {
         GameObject cube = Instantiate(cube_original.gameObject, cube_original.transform.position, cube_original.transform.rotation);
-        cube.gameObject.GetComponent<Collider>().enabled = false;
-        cube.gameObject.GetComponent<Rigidbody>().isKinematic = true;
-        cube.gameObject.GetComponent<Rigidbody>().detectCollisions = false;
-
-        GameObject clone_cube;
-        Rigidbody rb;
+        NavMeshAgent agent = cube.GetComponent<NavMeshAgent>();
+        Destroy(agent);
 
         ForeachElements(delegate (int row_x, int row_y, int row_z)
         {
-            //clone_cube = GetOrCreateCube(row_x, row_y, row_z);
-            //rb = clone_cube.GetComponentInChildren<Rigidbody>();
-            //if (rb != null)
-            //{
-            //    rb.mass = 1f;
-            //    rb.isKinematic = false;
-            //}
+            GameObject clone_cube = GetOrCreateCube(row_x, row_y, row_z);
+            MiniCubeClone(clone_cube, Color.black, time);
 
         });
 
-        //Debug.Log(cube.GetComponent<CubeContent>().GetCubesCount(World.colors));
-
-
-        //var tempMaterial = new Material(cube.GetComponent<Renderer>().sharedMaterial);
-        //tempMaterial.color = tempMaterial.color;
-        //cube.GetComponent<Renderer>().sharedMaterial = tempMaterial;
-        //var rb = cube.GetComponent<Rigidbody>();
-        //if (rb != null)
-        //{
-        //    rb.mass = 1f;
-        //    rb.isKinematic = false;
-        //    rb.AddForce(transform.forward * 5);
-        //}
-        Destroy(cube, 2f);
+        Destroy(cube);
     }
 
     public void GenerateColored(float percent)
@@ -299,6 +279,19 @@ public class CubeContent : MonoBehaviour
         {
             World.IsGameOver(this.GetComponent<Cube>());
         }
+    }
+
+    IEnumerator ShowFadeVfx(GameObject cube, Color new_color, float time)
+    {
+        GameObject vfx = Instantiate(vfx_fade, cube.transform);
+        vfx.GetComponent<ParticleSystem>().startColor = new_color;
+        vfx.GetComponent<ParticleSystem>().startLifetime = time;
+        vfx.transform.localScale = Vector3.one;
+        //vfx.transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+
+        yield return new WaitForSeconds(time);
+
+        Destroy(vfx);
     }
 
     public bool IsEmpty()

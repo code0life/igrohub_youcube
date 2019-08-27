@@ -60,8 +60,13 @@ public class Cube : MonoBehaviour
         Destroy(gameObject);
         if (content.color == Color.black)
         {
-            content.CubeClone(gameObject);
+            content.CubeClone(gameObject, 5f);
         }
         //Destroy(gameObject);
+    }
+
+    public void Invisible()
+    {
+        gameObject.SetActive(false);
     }
 }

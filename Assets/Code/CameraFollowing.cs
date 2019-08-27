@@ -15,9 +15,14 @@ public class CameraFollowing : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var cube_pos = cube.transform.position;
-        cube_pos.y = 0;
-        transform.position += (cube_pos + offset - transform.position)/50;
-        transform.LookAt(cube_pos);
+        
+        if (cube.transform.position != null)
+        {
+            var cube_pos = cube.transform.position;
+            cube_pos.y = 0;
+            transform.position += (cube_pos + offset - transform.position) / 50;
+            transform.LookAt(cube_pos);
+        }
+
     }
 }

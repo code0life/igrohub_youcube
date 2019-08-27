@@ -52,6 +52,8 @@ public class World : MonoBehaviour
     public static void GameOver(Cube player)
     {
         Interface.instance.GameLose();
+        player.Invisible();
+        player.content.CubeClone(player.gameObject, 100);
     }
 
     public static void IsGameWin(Cube player)
