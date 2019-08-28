@@ -26,10 +26,10 @@ public class Interface : MonoBehaviour
     public GameObject player;
 
     public Text white_cubes;
-    //string white;
-
     public Text colored_cubes;
     public Text all_cubes;
+
+    public Text spawn;
 
     public GameObject win_panel;
     public GameObject lose_panel;
@@ -71,6 +71,19 @@ public class Interface : MonoBehaviour
         white_cubes.GetComponent<Text>().text = " White cube - " + white_color;
         colored_cubes.GetComponent<Text>().text = " Color cube - " + color_count;
         all_cubes.GetComponent<Text>().text = " All cube - " + all_count;
+    }
+
+    public void SpawnInfo(int all_enemy)
+    {
+        //int white_color = all_count - color_count;
+
+        ////var white = new Interface();
+        ////Debug.Log(white_cubes.GetComponent<Text>().text);
+
+        //white_cubes.text = " White cube - " + white_color;
+        //white_cubes.GetComponent<Text>().text = " White cube - " + white_color;
+        //colored_cubes.GetComponent<Text>().text = " Color cube - " + color_count;
+        spawn.GetComponent<Text>().text = " On the field remained 4 enemy - " + all_enemy;
     }
 
     public void ResetGame()

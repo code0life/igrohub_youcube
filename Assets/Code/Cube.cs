@@ -36,7 +36,7 @@ public class Cube : MonoBehaviour
         
         if(is_player)
         {
-            content.GenerateColored(percent: 0.8f);
+            content.GenerateColored(percent: 0.3f);
             World.UpdateInterface(this);
         }
 
