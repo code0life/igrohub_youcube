@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    public enum SpawnState { SPAWNING, WAITING, COUNTING };
+    public enum SpawnState { SPAWNING, WAITING, COUNTING, STOP };
 
     [System.Serializable]
     public class Wave
@@ -41,23 +41,23 @@ public class Spawner : MonoBehaviour
 
     void Update()
     {
+        if (state == SpawnState.STOP) 
+        {
+            return;
+        }
+
         if (state == SpawnState.WAITING)
         {
             if (!IsAlive())
             {
+                Interface.instance.DoneSpawnInfo(waves[nextWave]);
                 WaveCompleted();  
             }
             else
             {
+
                 allEnemy = GameObject.FindGameObjectsWithTag("enemy");
-                int i = 0;
-                foreach (GameObject e in allEnemy)
-                {
-                    i++;
-                }
-
-                Interface.instance.SpawnInfo(i);
-
+                Interface.instance.SpawnInfo(allEnemy.Length);
                 return;
             }
         }
@@ -77,7 +77,7 @@ public class Spawner : MonoBehaviour
 
     void WaveCompleted()
     {
-        Debug.Log("WaveCompleted" );
+        //Debug.Log("WaveCompleted" );
         state = SpawnState.COUNTING;
         waveCountdown = timeBetweenWaves;
 
@@ -124,6 +124,13 @@ public class Spawner : MonoBehaviour
         yield break;
     }
 
+    public void Stop()
+    {
+
+        state = SpawnState.STOP;
+
+    }
+
     void Spawn(Transform _enemy)
     {
 
@@ -132,7 +139,7 @@ public class Spawner : MonoBehaviour
         Transform cube =  Instantiate(_enemy, _spawnPoint.position, _spawnPoint.rotation);
         cube.GetComponent<AI>().target = target;
 
-        AI.EnumBehavior typeCube = (AI.EnumBehavior)Random.Range(1, 3);
+        AI.EnumBehavior typeCube = (AI.EnumBehavior)Random.Range(0, 3);
         cube.GetComponent<AI>().behavior = typeCube;
 
         if (typeCube == AI.EnumBehavior.ESCAPE)

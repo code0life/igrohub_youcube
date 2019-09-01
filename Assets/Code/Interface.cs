@@ -34,11 +34,14 @@ public class Interface : MonoBehaviour
     public GameObject win_panel;
     public GameObject lose_panel;
 
+    Spawner spawner;
+
     public bool game_done = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        spawner = GameObject.Find("GameManager").GetComponent<Spawner>();
         //white = white_cubes.gameObject.GetComponent<Text>().text;
     }
 
@@ -52,12 +55,14 @@ public class Interface : MonoBehaviour
     {
         win_panel.SetActive(true);
         game_done = true;
+        spawner.Stop();
     }
 
     public void GameLose()
     {
         lose_panel.SetActive(true);
         game_done = true;
+        spawner.Stop();
     }
 
     public void SetStates(int color_count, int all_count)
@@ -75,15 +80,12 @@ public class Interface : MonoBehaviour
 
     public void SpawnInfo(int all_enemy)
     {
-        //int white_color = all_count - color_count;
+        spawn.GetComponent<Text>().text = "Destroy "+ all_enemy + " enemies!";
+    }
 
-        ////var white = new Interface();
-        ////Debug.Log(white_cubes.GetComponent<Text>().text);
-
-        //white_cubes.text = " White cube - " + white_color;
-        //white_cubes.GetComponent<Text>().text = " White cube - " + white_color;
-        //colored_cubes.GetComponent<Text>().text = " Color cube - " + color_count;
-        spawn.GetComponent<Text>().text = " On the field remained 4 enemy - " + all_enemy;
+    public void DoneSpawnInfo(Spawner.Wave wave)
+    {
+        spawn.GetComponent<Text>().text = "You destroyed all the enemies! Get ready, there is a new wave! " + wave.name;
     }
 
     public void ResetGame()

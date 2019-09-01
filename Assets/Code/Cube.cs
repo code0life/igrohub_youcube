@@ -46,7 +46,21 @@ public class Cube : MonoBehaviour
     void Update()
     {
         if(input.axis != Vector3.zero && input.axis != null)
-            moving.Rotate(input.axis, content.width);
+        {
+            if (moving.coroutine_animation == null)
+            {
+                if (moving.IsFreePath(input.axis))
+                {
+                    moving.Rotate(input.axis, content.width);
+                }
+                else
+                {
+                    moving.Rotate(moving.GetFreePath(), content.width);
+                }
+            }
+
+        }
+
     }
 
     private void OnTriggerEnter(Collider other)

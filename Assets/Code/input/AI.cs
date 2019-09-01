@@ -18,9 +18,17 @@ public class AI : MonoBehaviour, IInput
     public Vector3 axis
     {
         get
-        {    
-            if((transform.position - agent.pathEndPosition).magnitude < step_size)
+        {
+            //Debug.Log((transform.position - agent.pathEndPosition).magnitude);
+            //Vector3 dir = (agent.pathEndPosition - transform.position).normalized;
+            if ((transform.position - agent.pathEndPosition).magnitude < step_size)
+            {
                 return Vector3.zero;
+                //Vector3 dir = (agent.pathEndPosition - transform.position).normalized;
+                //return new Vector3(Mathf.Round(dir.x), 0, Mathf.Round(dir.z));
+                //Debug.Log(agent.pathEndPosition);
+            }
+
                 
             Vector3 dir = (agent.pathEndPosition - transform.position).normalized;
             return new Vector3(Mathf.Round(dir.x), 0, Mathf.Round(dir.z));
