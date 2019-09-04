@@ -19,16 +19,10 @@ public class AI : MonoBehaviour, IInput
     {
         get
         {
-            //Debug.Log((transform.position - agent.pathEndPosition).magnitude);
-            //Vector3 dir = (agent.pathEndPosition - transform.position).normalized;
             if ((transform.position - agent.pathEndPosition).magnitude < step_size)
             {
                 return Vector3.zero;
-                //Vector3 dir = (agent.pathEndPosition - transform.position).normalized;
-                //return new Vector3(Mathf.Round(dir.x), 0, Mathf.Round(dir.z));
-                //Debug.Log(agent.pathEndPosition);
             }
-
                 
             Vector3 dir = (agent.pathEndPosition - transform.position).normalized;
             return new Vector3(Mathf.Round(dir.x), 0, Mathf.Round(dir.z));
@@ -63,14 +57,15 @@ public class AI : MonoBehaviour, IInput
     
     void Awake()
     {
-        //if (agent.GetComponent<NavMeshAgent>().isOnNavMesh == true)
-        //{
-            agent = gameObject.AddComponent<NavMeshAgent>();
+
+        agent = gameObject.AddComponent<NavMeshAgent>();
+        if (agent != null)
+        {
             agent.updatePosition = false;
             agent.updateRotation = false;
             agent.updateUpAxis = false;
             agent.speed = 20;
-        //}
+        }
 
     }
     

@@ -10,6 +10,7 @@ public class Cube : MonoBehaviour
     internal CubeContent content;
     private BoxCollider collider;
     private Rigidbody rb;
+    public Vector3 sideMove;
 
     internal bool is_player
     {
@@ -19,6 +20,8 @@ public class Cube : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        sideMove = Vector3.zero;
+
         input = GetComponent<IInput>();
         moving = GetComponent<CubeMoving>();
         content = GetComponent<CubeContent>();
@@ -49,14 +52,14 @@ public class Cube : MonoBehaviour
         {
             if (moving.coroutine_animation == null)
             {
-                if (moving.IsFreePath(input.axis))
-                {
+               // if (moving.IsFreePath(input.axis))
+               // {
                     moving.Rotate(input.axis, content.width);
-                }
-                else
-                {
-                    moving.Rotate(moving.GetFreePath(), content.width);
-                }
+               // }
+                //else
+                //{
+                //    moving.Rotate(moving.GetFreePath(), content.width);
+                //}
             }
 
         }
@@ -76,7 +79,7 @@ public class Cube : MonoBehaviour
         {
             content.CubeClone(gameObject, 5f);
         }
-        //Destroy(gameObject);
+
     }
 
     public void Invisible()

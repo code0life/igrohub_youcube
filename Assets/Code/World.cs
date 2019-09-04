@@ -23,21 +23,17 @@ public class World : MonoBehaviour
     
     public static void Impact(Cube player, Cube target)
     {
-        Debug.Log("Impact - " + player.name);
-        //if (target != null)
-        //{
-            if (target.content.color == Color.black)
-            {
-                player.content.RemoveColored(target.content.rows * target.content.rows);
-                target.Kill();
+        if (target.content.color == Color.black)
+        {
+            player.content.RemoveColored(target.content.rows * target.content.rows);
+            target.Kill();
 
-            }
-            else if (colors.Contains(target.content.color))
-            {
-                player.content.AddColored(target.content.rows * target.content.rows, target.content.color);
-                target.Kill();
-            }
-        //}
+        }
+        else if (colors.Contains(target.content.color))
+        {
+            player.content.AddColored(target.content.rows * target.content.rows, target.content.color);
+            target.Kill();
+        }
 
         UpdateInterface(player);
 
@@ -45,7 +41,6 @@ public class World : MonoBehaviour
 
     public static void IsGameOver(Cube player)
     {
-        Debug.Log("IsGameOver - " + player.name);
         GameOver(player);
     }
 
@@ -58,7 +53,6 @@ public class World : MonoBehaviour
 
     public static void IsGameWin(Cube player)
     {
-        Debug.Log("IsWin - " + player.name);
         GameWin(player);
     }
 
@@ -69,7 +63,7 @@ public class World : MonoBehaviour
 
     public static void UpdateInterface(Cube player)
     {
-        Debug.Log("UpdateInterface");
+
         int colored = player.GetComponent<CubeContent>().GetCubesCount(colors);
         Interface.instance.SetStates(colored, player.content.content.Length);
 

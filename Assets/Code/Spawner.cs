@@ -26,6 +26,8 @@ public class Spawner : MonoBehaviour
 
     private float searchCountdown = 1f;
 
+    public RuntimeAnimatorController animSpawn;
+
     public SpawnState state = SpawnState.WAITING;
 
     void Start()
@@ -77,14 +79,13 @@ public class Spawner : MonoBehaviour
 
     void WaveCompleted()
     {
-        //Debug.Log("WaveCompleted" );
+
         state = SpawnState.COUNTING;
         waveCountdown = timeBetweenWaves;
 
         if (nextWave+1 > waves.Length-1)
         {
             nextWave = 0;
-            Debug.Log("CompliteAllWaves");
         }
         else
         {
@@ -111,7 +112,7 @@ public class Spawner : MonoBehaviour
 
     IEnumerator SpawnWave(Wave _wave)
     {
-        Debug.Log("SpawnWave "+_wave.name);
+
         state = SpawnState.SPAWNING;
 
         for (int i = 0; i < _wave.count; i++)
@@ -157,7 +158,6 @@ public class Spawner : MonoBehaviour
         }
         cube.GetComponent<CubeContent>().rows = Random.Range(1, 3);
 
-        Debug.Log("Spawn - " + _enemy.name);
     }
 
 }

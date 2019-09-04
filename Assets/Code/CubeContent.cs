@@ -43,7 +43,6 @@ public class CubeContent : MonoBehaviour
             SetCubeColor(row_x, row_y, row_z, color, false);
         });
 
-        //UpdateInterface();
     }
     
     // Update is called once per frame
@@ -216,10 +215,21 @@ public class CubeContent : MonoBehaviour
         {
             rb.mass = 1f;
             rb.isKinematic = false;
-            rb.AddForce(transform.forward * 5);
+            rb.AddForce(transform.forward * 10);
         }
-        StartCoroutine(ShowFadeVfx(cube, new_color, time));
+        if (Interface.instance.game_done == false)
+        {
+            StartCoroutine(ShowFadeVfx(cube, new_color, time));
+            if (rb != null)
+            {
+                rb.AddForce(transform.up * 100);
+            }
+        }
+
+        //DestroyByContact destroyContact = cube.AddComponent<DestroyByContact>();
+        //destroyContact.times = time;
         Destroy(cube, time);
+
     }
 
     public void CubeClone(GameObject cube_original, float time)
@@ -287,8 +297,6 @@ public class CubeContent : MonoBehaviour
         vfx.GetComponent<ParticleSystem>().startColor = new_color;
         vfx.GetComponent<ParticleSystem>().startLifetime = time;
         vfx.transform.localScale = Vector3.one;
-        //vfx.transform.position = new Vector3(transform.position.x, 0, transform.position.z);
-
         yield return new WaitForSeconds(time);
 
         Destroy(vfx);

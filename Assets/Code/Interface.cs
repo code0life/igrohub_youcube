@@ -42,7 +42,6 @@ public class Interface : MonoBehaviour
     void Start()
     {
         spawner = GameObject.Find("GameManager").GetComponent<Spawner>();
-        //white = white_cubes.gameObject.GetComponent<Text>().text;
     }
 
     // Update is called once per frame
@@ -68,9 +67,6 @@ public class Interface : MonoBehaviour
     public void SetStates(int color_count, int all_count)
     {
         int white_color = all_count - color_count;
-
-        //var white = new Interface();
-        //Debug.Log(white_cubes.GetComponent<Text>().text);
 
         white_cubes.text = " White cube - " + white_color;
         white_cubes.GetComponent<Text>().text = " White cube - " + white_color;
